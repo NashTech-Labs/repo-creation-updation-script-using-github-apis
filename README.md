@@ -18,6 +18,6 @@ This project can utilize Github APIs to help you create new repos inside an org 
 
 ### Troubleshooting
 
-1) Not all repos are being created, the ones at the end of file are getting skipped.
+1) **Not all repos are being created, the ones at the end of file are getting skipped.**
 
 The input file should have a blank line at the end.

@@ -37,7 +37,7 @@ main()
 			 name=$2
 			shift 2
 			;;
-		-r | --remove-collaborator)
+		-R | --remove-collaborator)
 			 remove="true"
 			shift 2
 			;;

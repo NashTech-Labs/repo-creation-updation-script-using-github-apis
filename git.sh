@@ -10,6 +10,7 @@ main()
 	delete="false"
 	remove="false"
 	private="false"
+	add="false"
   if [ $# -eq 0 ]; then
       usage
   fi
@@ -39,7 +40,7 @@ main()
 			;;
 		-R | --remove-collaborator)
 			 remove="true"
-			shift 2
+			shift
 			;;
 		-p | --permission)
 			if [ "$2" = "admin" ];
@@ -79,19 +80,19 @@ main()
 		esac
   done
 
-	if [ -n $repo ] && [ -n $user ] && [ $create = true ];
+	if [ -n $repo ] && [ -n $user ] && [ $create = "true" ];
 	then
 		add_repo
 	elif [ -n $repo ] && [ -n $org ] && [ $create = "true" ];
 	then
 		add_repo_org
-	elif [ -n $repo ] && [ $delete = "true" ] && [ -n $user ] || [ -n $org ];
+	elif [ -n $repo ] && [ $delete = "true" ];
 	then
 		delete_repo
-	elif [ -n $repo ] && [ $add = "true" ] && [ -n $name ] && [ -n $user ] || [ -n $org ];
+	elif [ -n $repo ] && [ $add = "true" ] && [ -n $name ];
 	then
 		add_collaborator
-	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ] && [ -n $user ] || [ -n $org ];
+	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ];
 	then
 		remove_collaborator
 	else

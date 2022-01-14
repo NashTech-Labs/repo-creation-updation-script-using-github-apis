@@ -1,6 +1,6 @@
 ## Github Automation Using API
 
-This project can utilize Github APIs to help you create new repos.
+This project can utilize Github APIs to help you create new repos from your terminal.
 
 ## MORE
 

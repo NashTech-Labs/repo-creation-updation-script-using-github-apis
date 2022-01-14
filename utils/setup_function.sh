@@ -13,11 +13,12 @@ usage() {
   printf "
     ${GREEN}${UND}Available flags:${NC}\n
     ${YELLOW}-r|--repo-name${GREEN}  Add a repo by specifying repo name.
-    ${YELLOW}-c|--create-repo${GREEN} It will create repo
+    ${YELLOW}-c|--create-repo${GREEN} It will create repo.
     ${YELLOW}-o|--org${GREEN}  Create repo under organisation conflicting with username.
-    ${YELLOW}-u|--username${GREEN} Create repo under private account conflicting with org.
-    ${YELLOW}-a|--add-collaborator${GREEN} Add collaborator to the repo you should pass argument.
-    ${YELLOW}-p|--permission${GREEN} Add collaborator permission (admin|user|read|maintain)
+    ${YELLOW}-u|--username${GREEN} Create repo under private account conflicting with org flag.
+    ${YELLOW}-n|--collaborator-name${GREEN} Add collaborator to the repo by passing name.
+    ${YELLOW}-a|--add-collaborator${GREEN} Add collaborator
+    ${YELLOW}-p|--permission${GREEN} Add collaborator permission (admin|user|read)
     ${YELLOW}-r|--remove-collaborator${GREEN} Remove a collaborator.
     ${YELLOW}-d|--delete-repo${GREEN} flag to delete repo
     ${YELLOW}-h|--help${GREEN} Help
@@ -31,15 +32,13 @@ add_repo(){
   then
     token_is_empty
 
-  elif [ -n $repo ] && [ -n $user ] && [ -n $private ];
+  elif [ -n $repo ] && [ -n $user ] && [ $private = "true" ];
   then
-    curl -X POST -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/user/repos" \
-      --data '{ "name":"'"$repo"'", "private": true }'
+    curl -X POST -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/user/repos" -d '{ "name":"'"$repo"'", "private": true }'
 
   elif [ -n $repo ] && [ -n $user ];
   then
-    curl -X POST -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/user/repos" \
-      --data '{ "name":"'"$repo"'", "private": false }'  
+    curl -X POST -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/user/repos" -d '{ "name":"'"$repo"'"}'
   else
     printf "${RED} please enter valid argument. \n Valid arguments are"
     usage
@@ -51,15 +50,13 @@ add_repo_org(){
   then
     token_is_empty
   
-  elif [ -n ${org} ] && [ -n ${repo} ] && [ -n $private ];
+  elif [ -n ${org} ] && [ -n ${repo} ] && [ $private = "true" ];
   then
-    curl -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/repos" \
-      --data '{ "name":"'"$repo"'", "private": true }'
+    curl -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/repos" -d '{ "name":"'"$repo"'", "private": true }'
 
   elif [ -n ${org} ] && [ -n ${repo} ];
   then
-    curl -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/repos" \
-      --data '{ "name":"'"$repo"'", "private": false }'
+    curl -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/repos" -d '{ "name":"'"$repo"'", "private": false}'
   else
     printf "${RED} please enter valid argument. \n Valid arguments are"
     usage

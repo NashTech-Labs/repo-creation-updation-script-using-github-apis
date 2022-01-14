@@ -6,6 +6,10 @@ source utils/setup_function.sh
 
 main()
 {
+	create="false"
+	delete="false"
+	remove="false"
+	private="false"
   if [ $# -eq 0 ]; then
       usage
   fi
@@ -14,57 +18,54 @@ main()
     option="$1"
     case ${option} in
     -c | --create-repo)
-			if [ -n $user ] && [ -n $repo ] && [ -z $org ];
-			then
-				add_repo
-			elif [ -n $org ] && [ -n $repo ] && [ -z $user ];
-			then
-				add_repo_org
-			else
-				usage
-			fi
+			create="true"
       shift
       ;;
 		-r | --repo-name)
-			export repo=$2
+			repo=$2
 			shift 2
 			;;
 		-o | --org)
-			export org=$2
+			org=$2
 			shift 2
 			;;
 		-u | --username)
-			export user=$2
+			 user=$2
 			shift 2
 			;;
-		-a | --add-collaborator)
-			export name=$2
-			add_collaborator
+		-n | --collaborator-name)
+			 name=$2
 			shift 2
 			;;
 		-r | --remove-collaborator)
-			export name=$2
-			remove_collaborator
+			 remove="true"
 			shift 2
 			;;
-		-p |--permission)
-			export permission=$2
+		-p | --permission)
+			if [ "$2" = "admin" ];
+			then
+				 permission="admin"
+			elif [ "$2" = "write" ];
+			then
+				 permission="push"
+			elif [ "$2" = "read" ];
+			then
+				 permission="pull"
+			else
+				printf "enter valid permissions"
+			fi
 			shift 2
+			;;
+		-a | --add-collaborator)
+			 add="true"
+			shift
 			;;
 		-d | --delete-repo)
-			if [ -n $user ] && [ -n $repo ] && [ -z $org ];
-			then
-				delete_repo
-			elif [ -n $org ] && [ -n $repo ] && [ -z $user ];
-			then
-				delete_repo
-			else
-				usage
-			fi
+			 delete="true"
 			shift
 			;;
 		--private)
-			export private="true"
+			private="true"
 			shift
 			;;
 		-h | --help)
@@ -77,6 +78,27 @@ main()
       ;;
 		esac
   done
+
+	if [ -n $repo ] && [ -n $user ] && [ $create = true ];
+	then
+		add_repo
+	elif [ -n $repo ] && [ -n $org ] && [ $create = "true" ];
+	then
+		add_repo_org
+	elif [ -n $repo ] && [ $delete = "true" ] && [ -n $user ] || [ -n $org ];
+	then
+		delete_repo
+	elif [ -n $repo ] && [ $add = "true" ] && [ -n $name ] && [ -n $user ] || [ -n $org ];
+	then
+		add_collaborator
+	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ] && [ -n $user ] || [ -n $org ];
+	then
+		remove_collaborator
+	else
+		usage
+	fi
+
+	set -- "${POSITIONAL[@]}"
 }
 
 main "$@"

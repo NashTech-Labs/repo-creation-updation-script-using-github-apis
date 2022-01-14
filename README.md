@@ -1,23 +1,42 @@
 ## Github Automation Using API
 
-This project can utilize Github APIs to help you create new repos inside an org and also give admin rights to a particular person.
+This project can utilize Github APIs to help you create new repos from your terminal.
 
-### How To Use?
+## MORE
 
-1) Add your Github Personal Access Token in the `token` variable. (You can generate your Github Personal Access Token from [here.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token)
-2) Add your org game in the `org` variable.
-3) Create a file at the same location as the script. You can call this file anything you want, we are calling it `repos.txt`. If you do change it though, update the same in the script. The file should have content in the following format:
+## Requirement
 
-```
-<repo-name> <contributor-github-id>
-<repo-name> <contributor-github-id>
-<repo-name> <contributor-github-id>
-...
+1. Create personal access token from github setting
+2. export token as
 
-```
+    export TOKEN=<value>
 
-### Troubleshooting
+#### For more info run 
 
-1) **Not all repos are being created, the ones at the end of file are getting skipped.**
+        ./git.sh --help
 
-The input file should have a blank line at the end.
+## examples
+
+1. Create a repo in your account
+
+        ./git.sh --create-repo --repo-name test-repo-1 --user <user-name>
+
+2. Delete a repo in your account
+
+        ./git.sh --create-repo --repo-name test-repo-1 --user <user-name>
+
+3. Create a repo in a organization
+
+        ./git.sh --create-repo --repo-name test-repo-1 --org <org-name>
+
+4. Add a collaborator
+
+        ./git.sh --add-collaborator --collaborator-name <name> --repo-name test-repo-1 --user <user-name> --permission admin|read|write
+
+5. Add a collaborator for org repo
+
+        ./git.sh --add-collaborator --collaborator-name <name> --repo-name test-repo-1 --org <org-name> --permission admin|read|write
+
+6. Remove a collaborator 
+
+        ./git.sh --remove-collaborator --collaborator-name <name> --repo-name test-repo-1 --user|--org <user-name>|<org-name>

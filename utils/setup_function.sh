@@ -16,13 +16,17 @@ usage() {
     ${YELLOW}-c|--create-repo${GREEN} It will create repo.
     ${YELLOW}-o|--org${GREEN}  Create repo under organisation conflicting with username.
     ${YELLOW}-u|--username${GREEN} Create repo under private account conflicting with org flag.
-    ${YELLOW}-n|--collaborator-name${GREEN} Add collaborator to the repo by passing name.
+    ${YELLOW}-n|--collaborator-name${GREEN} Add collaborator to the repo by passing name conflicting with teamname.
+    ${YELLOW}-t|--teamname${GREEN} Add collaborator to the repo by passing name conflicting with collaborator name.
     ${YELLOW}-a|--add-collaborator${GREEN} Add collaborator
     ${YELLOW}-p|--permission${GREEN} Add collaborator permission (admin|user|read)
-    ${YELLOW}-r|--remove-collaborator${GREEN} Remove a collaborator.
-    ${YELLOW}-d|--delete-repo${GREEN} flag to delete repo
+    ${YELLOW}-r|--remove-collaborator${GREEN} Remove a collaborator or team collaborator.
+    ${YELLOW}-d|--delete-repo${GREEN} flag to delete repo.
     ${YELLOW}-h|--help${GREEN} Help
   ${NC}\n" 1>&2
+
+  printf "${GREEN}${UND} Examples:${NC}\n"
+  printf "${YELLOW}"
   exit 1
 }
 
@@ -71,25 +75,59 @@ add_collaborator(){
     elif [ -z ${name} ] && [ -z ${permission} ];
     then
       echo "Please enter collaborator username and permissions"
-    elif [ -n $org ] && [ -n $repo ] && [ -n $name ] && [ -n $permission ] && [ -z $user ];
+    elif [ -n $org ] && [ -z $teamname ] && [ -n $repo ] && [ -n $name ] && [ -n $permission ] && [ -z $user ];
     then
       curl  -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/repos/$org/$repo/collaborators/$name" --data '{ "permission":"'"$permission"'" }'
-    elif [ -n $repo ] && [ -n $name ] && [ -n $permission ] && [ -n $user ] && [ -z $org ];
+    elif [ -n $repo ] && [ -z $teamname ] && [ -n $name ] && [ -n $permission ] && [ -n $user ] && [ -z $org ];
     then
       curl  -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/repos/$user/$repo/collaborators/$name" --data '{ "permission":"'"$permission"'" }'
+    elif [ -n $repo ] && [ -n $teamname ] && [ -z $name ] && [ -n $permission ] && [ -n $org ] && [ -n $user ];
+    then
+      curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo" --data '{ "permission":"'"$permission"'" }'
     else
       usage
     fi
 }
+
+add_team_collaborator(){
+    if [ -z $TOKEN ];
+    then
+      token_is_empty
+    elif [ -z ${teamname} ] && [ -z ${permission} ];
+    then
+      echo "Please enter collaborator team name and permissions"
+    elif [ -n $repo ] && [ -n $teamname ] && [ -n $permission ] && [ -n $org ];
+    then
+      curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo" --data '{ "permission":"'"$permission"'" }'
+    else
+      usage
+    fi
+}
+
+remove_team_collaborator(){
+    if [ -z $TOKEN ];
+    then
+      token_is_empty
+    elif [ -z ${teamname} ];
+    then
+      echo "Please enter collaborator team name"
+    elif [ -n $repo ] && [ -n $teamname ] && [ -n $org ];
+    then
+      curl -X DELETE -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo"
+    else
+      usage
+    fi
+}
+
 
 remove_collaborator(){
     if [ -z $TOKEN ];
     then
       token_is_empty
       
-    elif [ -z $name ] && [ -z $permission ];
+    elif [ -z $name ];
     then
-      echo "Please enter collaborator username and permissions"
+      echo "Please enter collaborator username"
     elif [ -n $user ] && [ -z $org ];
     then
       curl -X DELETE -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/repos/$user/$repo/collaborators/$name"

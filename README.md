@@ -30,7 +30,7 @@ This project can utilize Github APIs to help you do following:
 
 2. Delete a repo in your account
 
-        ./git.sh --create-repo --repo-name test-repo-1 --user <user-name>
+        ./git.sh --delete-repo --repo-name test-repo-1 --user <user-name>
 
 3. Create a repo in a organization
 

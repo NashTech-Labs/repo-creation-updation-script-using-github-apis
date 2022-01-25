@@ -109,7 +109,7 @@ main()
 		usage
 	fi
 
-	set -- "${POSITIONAL[@]}"
+	unset -- "${POSITIONAL[@]}"
 }
 
 main "$@"

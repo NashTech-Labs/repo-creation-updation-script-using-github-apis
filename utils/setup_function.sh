@@ -26,7 +26,7 @@ usage() {
   ${NC}\n" 1>&2
 
   printf "${GREEN}${UND} Examples:${NC}\n"
-  printf "${YELLOW}"
+  printf "${YELLOW} CHECK README.md\n"
   exit 1
 }
 
@@ -93,9 +93,9 @@ add_team_collaborator(){
     if [ -z $TOKEN ];
     then
       token_is_empty
-    elif [ -z ${teamname} ] && [ -z ${permission} ];
+    elif [ -z ${teamname} ] || [ -z ${permission} ] || [ -z ${org} ];
     then
-      echo "Please enter collaborator team name and permissions"
+      echo "Please enter collaborator teamname, permissions or org"
     elif [ -n $repo ] && [ -n $teamname ] && [ -n $permission ] && [ -n $org ];
     then
       curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo" --data '{ "permission":"'"$permission"'" }'
@@ -108,9 +108,9 @@ remove_team_collaborator(){
     if [ -z $TOKEN ];
     then
       token_is_empty
-    elif [ -z ${teamname} ];
+    elif [ -z ${teamname} ] || [ -z ${org} ];
     then
-      echo "Please enter collaborator team name"
+      echo "Please enter collaborator teamname or org name"
     elif [ -n $repo ] && [ -n $teamname ] && [ -n $org ];
     then
       curl -X DELETE -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo"

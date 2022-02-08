@@ -31,16 +31,20 @@ main()
 			shift 2
 			;;
 		-u | --username)
-			 user=$2
+			user=$2
 			shift 2
 			;;
 		-n | --collaborator-name)
-			 name=$2
+			name=$2
 			shift 2
 			;;
 		-R | --remove-collaborator)
-			 remove="true"
+			remove="true"
 			shift
+			;;
+		-t | --teamname)
+			teamname=$2
+			shift 2
 			;;
 		-p | --permission)
 			if [ "$2" = "admin" ];
@@ -92,14 +96,20 @@ main()
 	elif [ -n $repo ] && [ $add = "true" ] && [ -n $name ];
 	then
 		add_collaborator
-	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ];
+	elif [ -n $repo ] && [ $add = "true" ] && [ -n $teamname ];
+	then
+		add_team_collaborator
+	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ] && [ -z $teamname ];
 	then
 		remove_collaborator
+	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $teamname ];
+	then
+		remove_team_collaborator
 	else
 		usage
 	fi
 
-	set -- "${POSITIONAL[@]}"
+	unset -- "${POSITIONAL[@]}"
 }
 
 main "$@"

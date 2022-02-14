@@ -84,25 +84,25 @@ main()
 		esac
   done
 
-	if [ -n $repo ] && [ -n $user ] && [ $create = "true" ];
+	if [ -n $repo ] && [ ! $user = "" ] && [ $create = "true" ];
 	then
 		add_repo
-	elif [ -n $repo ] && [ -n $org ] && [ $create = "true" ];
+	elif [ -n $repo ] && [ ! $org = "" ] && [ $create = "true" ];
 	then
 		add_repo_org
 	elif [ -n $repo ] && [ $delete = "true" ];
 	then
 		delete_repo
-	elif [ -n $repo ] && [ $add = "true" ] && [ -n $name ];
+	elif [ -n $repo ] && [ $add = "true" ] && [ ! $name = "" ];
 	then
 		add_collaborator
-	elif [ -n $repo ] && [ $add = "true" ] && [ -n $teamname ];
+	elif [ -n $repo ] && [ $add = "true" ] && [ ! $teamname = "" ];
 	then
 		add_team_collaborator
-	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $name ] && [ -z $teamname ];
+	elif [ -n $repo ] && [ $remove = "true" ] && [ ! $name = "" ] && [ -z $teamname ];
 	then
 		remove_collaborator
-	elif [ -n $repo ] && [ $remove = "true" ] && [ -n $teamname ];
+	elif [ -n $repo ] && [ $remove = "true" ] && [ ! $teamname = "" ];
 	then
 		remove_team_collaborator
 	else

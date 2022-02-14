@@ -81,9 +81,6 @@ add_collaborator(){
     elif [ -n $repo ] && [ -z $teamname ] && [ -n $name ] && [ -n $permission ] && [ -n $user ] && [ -z $org ];
     then
       curl  -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/repos/$user/$repo/collaborators/$name" --data '{ "permission":"'"$permission"'" }'
-    elif [ -n $repo ] && [ -n $teamname ] && [ -z $name ] && [ -n $permission ] && [ -n $org ] && [ -n $user ];
-    then
-      curl -X PUT -H "Authorization: token $TOKEN" -H "Accept: application/vnd.github.v3+json" "$url/orgs/$org/teams/$teamname/repos/$org/$repo" --data '{ "permission":"'"$permission"'" }'
     else
       usage
     fi
